@@ -46,12 +46,11 @@ $ '
 #ZSH_THEME_GIT_PROMPT_PREFIX="$fg_bold[green]("
 #ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 
-ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg[magenta](%}⭠ "
-ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[green]%}?"
-#ZSH_THEME_GIT_PROMPT_DIRTY="✗"
+ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg_bold[blue](%}⭠ "
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg_bold[blue]%})%{$reset_color%}"
 
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}✗"
-ZSH_THEME_GIT_PROMPT_CLEAN="✔"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[green]%}?"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✗"
+ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}✔"
 
 RPROMPT='%{$fg_bold[red]%}$(rbenv_version)%{$reset_color%}'
