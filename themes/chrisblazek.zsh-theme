@@ -27,6 +27,7 @@
 
 local user="%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}"
 local pwd="%{$fg_bold[yellow]%}${PWD/#$HOME/~}%{$reset_color%}"
+local pwd="%{$fg_bold[yellow]%}%~%{$reset_color%}"
 local time="%{$fg_bold[red]%}%*%{$reset_color%}"
 local return_code='%(?..%{$fg[red]%}%? .%{$reset_color%})'
 local git_branch='$(git_prompt_status)%{$reset_color%}$(git_prompt_info)%{$reset_color%}'
