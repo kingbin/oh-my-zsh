@@ -25,32 +25,41 @@
 # $ '
 
 
+local user="%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}"
+local pwd="%{$fg_bold[yellow]%}${PWD/#$HOME/~}%{$reset_color%}"
+local time="%{$fg_bold[red]%}%*%{$reset_color%}"
+local return_code='%(?..%{$fg[red]%}%? .%{$reset_color%})'
+local git_branch='$(git_prompt_status)%{$reset_color%}$(git_prompt_info)%{$reset_color%}'
 
+local rvm=''
+if which rvm-prompt &> /dev/null; then
+ rvm='%{$fg[green]%}<$(rvm-prompt i v g)>%{$reset_color%}'
+else
+ if which rbenv &> /dev/null; then
+   rvm='%{$fg[green]%}<$(rbenv version | sed -e "s/ (set.*$//")>%{$reset_color%}'
+ fi
+fi
 
+local nvm=''
+if which node &> /dev/null; then
+ nvm='%{$fg[green]%}<$(node --version)>%{$reset_color%}'
+fi
 
-rvm_current() {
-  rvm current 2>/dev/null
-}
-
-rbenv_version() {
-  rbenv version 2>/dev/null | awk '{print $1}'
-}
-
-PROMPT='
-%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}%{$fg_bold[yellow]%}${PWD/#$HOME/~}%{$reset_color%}$(git_prompt_info) ⌚ %{$fg_bold[red]%}%*%{$reset_color%}
-$ '
-
-
+PROMPT='${user}|${pwd}|${time}
+\$ '
+RPROMPT="${return_code} ${git_branch} ${rvm}${nvm}"
 
 # git theming
-#ZSH_THEME_GIT_PROMPT_PREFIX="$fg_bold[green]("
-#ZSH_THEME_GIT_PROMPT_SUFFIX=")"
-
-ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg_bold[blue](%}⭠ "
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}("
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg_bold[blue]%})%{$reset_color%}"
+#ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}X"
+#ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}O"
+ZSH_THEME_GIT_PROMPT_DIRTY=""
+ZSH_THEME_GIT_PROMPT_CLEAN=""
 
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[green]%}?"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✗"
-ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}✔"
-
-RPROMPT='%{$fg_bold[red]%}$(rbenv_version)%{$reset_color%}'
+ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%} + "
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{$fg_bold[red]%} M "
+ZSH_THEME_GIT_PROMPT_DELETED="%{$fg_bold[red]%} - "
+ZSH_THEME_GIT_PROMPT_RENAMED="%{$fg[magenta]%} R "
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[yellow]%} UM "
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%} ? "
