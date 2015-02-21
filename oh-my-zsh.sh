@@ -31,6 +31,11 @@ for config_file ($ZSH/lib/*.zsh); do
   source $config_file
 done
 
+# Load all of your custom configurations from custom/
+for config_file ($ZSH_CUSTOM/*.zsh(N)); do
+  source $config_file
+done
+unset config_file
 
 is_plugin() {
   local base_dir=$1
@@ -73,12 +78,6 @@ for plugin ($plugins); do
     source $ZSH/plugins/$plugin/$plugin.plugin.zsh
   fi
 done
-
-# Load all of your custom configurations from custom/
-for config_file ($ZSH_CUSTOM/*.zsh(N)); do
-  source $config_file
-done
-unset config_file
 
 # Load the theme
 if [ "$ZSH_THEME" = "random" ]; then
