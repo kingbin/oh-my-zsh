@@ -1,24 +1,5 @@
 set -e
 
-# Use colors, but only if connected to a terminal, and that terminal
-# supports them.
-ncolors=$(tput colors)
-if [ -t 1 ] && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
-  RED=="$(tput setaf 1)"
-  GREEN="$(tput setaf 2)"
-  YELLOW="$(tput setaf 3)"
-  BLUE="$(tput setaf 4)"
-  BOLD="$(tput bold)"
-  NORMAL="$(tput sgr0)"
-else
-  RED=""
-  GREEN=""
-  YELLOW=""
-  BLUE=""
-  BOLD=""
-  NORMAL=""
-fi
-
 if [ ! -n "$ZSH" ]; then
   ZSH=~/.oh-my-zsh
 fi
@@ -29,7 +10,7 @@ if [ -d "$ZSH" ]; then
   exit
 fi
 
-printf "${BLUE}Cloning Oh My Zsh...${NORMAL}\n"
+echo "\033[0;34mCloning Oh My Zsh...\033[0m"
 hash git >/dev/null 2>&1 && env git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $ZSH || {
   printf "git not installed\n"
   exit
