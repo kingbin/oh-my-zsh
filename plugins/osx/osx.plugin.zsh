@@ -5,35 +5,29 @@
 #       VERSION:  1.1.0
 # ------------------------------------------------------------------------------
 
-function _omz_osx_get_frontmost_app() {
-  local the_app=$(
+function tab() {
+  local command="cd \\\"$PWD\\\"; clear"
+  (( $# > 0 )) && command="${command}; $*"
+
+  the_app=$(
     osascript 2>/dev/null <<EOF
       tell application "System Events"
         name of first item of (every process whose frontmost is true)
       end tell
 EOF
   )
-  echo "$the_app"
-}
 
-function tab() {
-  # Must not have trailing semicolon, for iTerm compatibility
-  local command="cd \\\"$PWD\\\"; clear"
-  (( $# > 0 )) && command="${command}; $*"
-
-  local the_app=$(_omz_osx_get_frontmost_app)
-
-  if [[ "$the_app" == 'Terminal' ]]; then
-    # Discarding stdout to quash "tab N of window id XXX" output
-    osascript >/dev/null <<EOF
+  [[ "$the_app" == 'Terminal' ]] && {
+    osascript 2>/dev/null <<EOF
       tell application "System Events"
         tell process "Terminal" to keystroke "t" using command down
+        tell application "Terminal" to do script "${command}" in front window
       end tell
-      tell application "Terminal" to do script "${command}" in front window
 EOF
+  }
 
-  elif [[ "$the_app" == 'iTerm' ]]; then
-    osascript <<EOF
+  [[ "$the_app" == 'iTerm' ]] && {
+    osascript 2>/dev/null <<EOF
       tell application "iTerm"
         set current_terminal to current terminal
         tell current_terminal
@@ -41,27 +35,29 @@ EOF
           set current_session to current session
           tell current_session
             write text "${command}"
+            keystroke return
           end tell
         end tell
       end tell
 EOF
-
-  else
-    echo "tab: unsupported terminal app: $the_app"
-    false
-
-  fi
+  }
 }
 
 function vsplit_tab() {
-  local command="cd \\\"$PWD\\\"; clear"
+  local command="cd \\\"$PWD\\\""
   (( $# > 0 )) && command="${command}; $*"
 
-  local the_app=$(_omz_osx_get_frontmost_app)
+  the_app=$(
+    osascript 2>/dev/null <<EOF
+      tell application "System Events"
+        name of first item of (every process whose frontmost is true)
+      end tell
+EOF
+  )
 
-  if [[ "$the_app" == 'iTerm' ]]; then
-    osascript <<EOF
-      -- tell application "iTerm" to activate
+  [[ "$the_app" == 'iTerm' ]] && {
+    osascript 2>/dev/null <<EOF
+      tell application "iTerm" to activate
 
       tell application "System Events"
         tell process "iTerm"
@@ -69,24 +65,26 @@ function vsplit_tab() {
             click
           end tell
         end tell
-        keystroke "${command} \n"
+        keystroke "${command}; clear;"
+        keystroke return
       end tell
 EOF
-
-  else
-    echo "$0: unsupported terminal app: $the_app" >&2
-    false
-
-  fi
+  }
 }
 
 function split_tab() {
-  local command="cd \\\"$PWD\\\"; clear"
+  local command="cd \\\"$PWD\\\""
   (( $# > 0 )) && command="${command}; $*"
 
-  local the_app=$(_omz_osx_get_frontmost_app)
+  the_app=$(
+    osascript 2>/dev/null <<EOF
+      tell application "System Events"
+        name of first item of (every process whose frontmost is true)
+      end tell
+EOF
+  )
 
-  if [[ "$the_app" == 'iTerm' ]]; then
+  [[ "$the_app" == 'iTerm' ]] && {
     osascript 2>/dev/null <<EOF
       tell application "iTerm" to activate
 
@@ -96,15 +94,11 @@ function split_tab() {
             click
           end tell
         end tell
-        keystroke "${command} \n"
+        keystroke "${command}; clear;"
+        keystroke return
       end tell
 EOF
-
-  else
-    echo "$0: unsupported terminal app: $the_app" >&2
-    false
-
-  fi
+  }
 }
 
 function pfd() {
