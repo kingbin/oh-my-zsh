@@ -5,29 +5,35 @@
 #       VERSION:  1.1.0
 # ------------------------------------------------------------------------------
 
-function tab() {
-  local command="cd \\\"$PWD\\\"; clear"
-  (( $# > 0 )) && command="${command}; $*"
-
-  the_app=$(
+function _omz_osx_get_frontmost_app() {
+  local the_app=$(
     osascript 2>/dev/null <<EOF
       tell application "System Events"
         name of first item of (every process whose frontmost is true)
       end tell
 EOF
   )
+  echo "$the_app"
+}
 
-  [[ "$the_app" == 'Terminal' ]] && {
-    osascript 2>/dev/null <<EOF
+function tab() {
+  # Must not have trailing semicolon, for iTerm compatibility
+  local command="cd \\\"$PWD\\\"; clear"
+  (( $# > 0 )) && command="${command}; $*"
+
+  local the_app=$(_omz_osx_get_frontmost_app)
+
+  if [[ "$the_app" == 'Terminal' ]]; then
+    # Discarding stdout to quash "tab N of window id XXX" output
+    osascript >/dev/null <<EOF
       tell application "System Events"
         tell process "Terminal" to keystroke "t" using command down
-        tell application "Terminal" to do script "${command}" in front window
       end tell
+      tell application "Terminal" to do script "${command}" in front window
 EOF
-  }
 
-  [[ "$the_app" == 'iTerm' ]] && {
-    osascript 2>/dev/null <<EOF
+  elif [[ "$the_app" == 'iTerm' ]]; then
+    osascript <<EOF
       tell application "iTerm"
         set current_terminal to current terminal
         tell current_terminal
@@ -35,29 +41,37 @@ EOF
           set current_session to current session
           tell current_session
             write text "${command}"
-            keystroke return
           end tell
         end tell
       end tell
 EOF
-  }
+
+  elif [[ "$the_app" == 'iTerm2' ]]; then
+      osascript <<EOF
+        tell application "iTerm"
+          tell current window
+            create tab with default profile
+            tell current session to write text "${command}"
+          end tell
+        end tell
+EOF
+
+  else
+    echo "tab: unsupported terminal app: $the_app"
+    false
+
+  fi
 }
 
 function vsplit_tab() {
-  local command="cd \\\"$PWD\\\""
+  local command="cd \\\"$PWD\\\"; clear"
   (( $# > 0 )) && command="${command}; $*"
 
-  the_app=$(
-    osascript 2>/dev/null <<EOF
-      tell application "System Events"
-        name of first item of (every process whose frontmost is true)
-      end tell
-EOF
-  )
+  local the_app=$(_omz_osx_get_frontmost_app)
 
-  [[ "$the_app" == 'iTerm' ]] && {
-    osascript 2>/dev/null <<EOF
-      tell application "iTerm" to activate
+  if [[ "$the_app" == 'iTerm' ]]; then
+    osascript <<EOF
+      -- tell application "iTerm" to activate
 
       tell application "System Events"
         tell process "iTerm"
@@ -65,26 +79,37 @@ EOF
             click
           end tell
         end tell
-        keystroke "${command}; clear;"
-        keystroke return
+        keystroke "${command} \n"
       end tell
 EOF
-  }
+
+  elif [[ "$the_app" == 'iTerm2' ]]; then
+      osascript <<EOF
+        tell application "iTerm"
+          tell current session of first window
+            set newSession to (split vertically with same profile)
+            tell newSession
+              write text "${command}"
+              select
+            end tell
+          end tell
+        end tell
+EOF
+
+  else
+    echo "$0: unsupported terminal app: $the_app" >&2
+    false
+
+  fi
 }
 
 function split_tab() {
-  local command="cd \\\"$PWD\\\""
+  local command="cd \\\"$PWD\\\"; clear"
   (( $# > 0 )) && command="${command}; $*"
 
-  the_app=$(
-    osascript 2>/dev/null <<EOF
-      tell application "System Events"
-        name of first item of (every process whose frontmost is true)
-      end tell
-EOF
-  )
+  local the_app=$(_omz_osx_get_frontmost_app)
 
-  [[ "$the_app" == 'iTerm' ]] && {
+  if [[ "$the_app" == 'iTerm' ]]; then
     osascript 2>/dev/null <<EOF
       tell application "iTerm" to activate
 
@@ -94,11 +119,28 @@ EOF
             click
           end tell
         end tell
-        keystroke "${command}; clear;"
-        keystroke return
+        keystroke "${command} \n"
       end tell
 EOF
-  }
+
+  elif [[ "$the_app" == 'iTerm2' ]]; then
+      osascript <<EOF
+        tell application "iTerm"
+          tell current session of first window
+            set newSession to (split horizontally with same profile)
+            tell newSession
+              write text "${command}"
+              select
+            end tell
+          end tell
+        end tell
+EOF
+
+  else
+    echo "$0: unsupported terminal app: $the_app" >&2
+    false
+
+  fi
 }
 
 function pfd() {
