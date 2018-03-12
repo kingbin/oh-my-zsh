@@ -5,6 +5,8 @@ fi
 
 # Initializes Oh My Zsh
 
+export LANG=en_US.UTF-8
+
 # add a function path
 fpath=($ZSH/functions $ZSH/completions $fpath)
 
@@ -90,3 +92,5 @@ else
     fi
   fi
 fi
+
+
