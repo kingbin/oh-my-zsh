@@ -7,7 +7,8 @@ setopt PROMPT_BANG
 local user='%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}'
 local pwd='%{$fg_bold[yellow]%}${PWD/#$HOME/~}%{$reset_color%}'
 local histver='%{$fg_bold[red]%}%!%{$reset_color%}'
-local timedisplay='👾  %{$fg_bold[red]%}%*%{$reset_color%}'
+#local timedisplay='👾  %{$fg_bold[red]%}%*%{$reset_color%}'
+local timedisplay='🍺 %{$fg_bold[red]%}%*%{$reset_color%}'
 
 local rvm=''
 if which rvm-prompt &> /dev/null; then
@@ -44,11 +45,13 @@ ZSH_THEME_GIT_PROMPT_RENAMED="%{$fg[magenta]%} ➜"
 ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[yellow]%} ═"
 #ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[green]%}?"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%} ✭"
-
+ZSH_THEME_GIT_PROMPT_AHEAD=" ⬆"
+ZSH_THEME_GIT_PROMPT_BEHIND=" ⬇"
+ZSH_THEME_GIT_PROMPT_DIVERGED=" ᛨ"
 
 if [[ -n $SSH_CONNECTION ]]; then
   #PROMPT='%m:%3~$(git_prompt_info)%# '
-  PROMPT="%m:${user} ${pwd} ${git_branch} ${timedisplay}
+  PROMPT="${user} ${pwd} ${git_branch} ${timedisplay}
   ${histver}$ "
 else
   PROMPT="${user} ${pwd} ${git_branch} ${timedisplay}
