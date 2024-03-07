@@ -61,9 +61,9 @@ root_prompt="$emoji[skull]"
 warn_prompt="$emoji[collision_symbol]"
 
 vcs_unstaged_glyph="%{$emoji[circled_latin_capital_letter_m]$emoji2[emoji_style] %2G%}"
-vcs_staged_glyph="%{$emoji[high_voltage_sign]%2G%}"
-vcs_branch_glyph=$'\Ue0a0' # 
-vcs_action_glyph=$'\U276f' # ❯
+vcs_staged_glyph="%{$emoji[high_voltage_sign] %2G%}"
+vcs_branch_glyph=$(print -P $'\Ue0a0') # 
+vcs_action_glyph=$(print -P $'\U276f') # ❯
 
 red="$FG[001]"
 yellow="$FG[003]"
@@ -77,10 +77,6 @@ prompt_glyph="%{%(#.${root_prompt}.${user_prompt}) %2G%}"
 
 
 setopt promptsubst
-
-# Workaround for zsh 5.2 release (kudos to @timothybasanov)
-autoload +X VCS_INFO_nvcsformats
-functions[VCS_INFO_nvcsformats]=${functions[VCS_INFO_nvcsformats]/local -a msgs/}
 
 autoload -U add-zsh-hook
 autoload -Uz vcs_info

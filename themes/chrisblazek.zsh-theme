@@ -4,7 +4,8 @@
 setopt PROMPT_SUBST
 setopt PROMPT_BANG
 
-local user='%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}'
+#local user='%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%}'
+local user='%{$fg_bold[blue]%}@%{$reset_color%}%{$fg_bold[green]%}%m%{$reset_color%}'
 local pwd='%{$fg_bold[yellow]%}${PWD/#$HOME/~}%{$reset_color%}'
 local histver='%{$fg_bold[red]%}%!%{$reset_color%}'
 #local timedisplay='👾  %{$fg_bold[red]%}%*%{$reset_color%}'

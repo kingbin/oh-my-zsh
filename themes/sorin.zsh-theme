@@ -1,5 +1,5 @@
 # sorin.zsh-theme
-# screenshot: https://i.imgur.com/aipDQ.png
+# screenshot: http://i.imgur.com/aipDQ.png
 
 if [[ "$TERM" != "dumb" ]] && [[ "$DISABLE_LS_COLORS" != "true" ]]; then
   MODE_INDICATOR="%{$fg_bold[red]%}❮%{$reset_color%}%{$fg[red]%}❮❮%{$reset_color%}"

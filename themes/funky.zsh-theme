@@ -1,5 +1,5 @@
 # Taken from Tassilo's Blog
-# https://tsdh.wordpress.com/2007/12/06/my-funky-zsh-prompt/
+# http://tsdh.wordpress.com/2007/12/06/my-funky-zsh-prompt/
 
 local blue_op="%{$fg[blue]%}[%{$reset_color%}"
 local blue_cp="%{$fg[blue]%}]%{$reset_color%}"
