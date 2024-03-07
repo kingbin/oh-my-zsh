@@ -39,50 +39,8 @@ function _omz_git_prompt_info() {
   echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${ref:gs/%/%%}${upstream:gs/%/%%}$(parse_git_dirty)${ZSH_THEME_GIT_PROMPT_SUFFIX}"
 }
 
-# Use async version if setting is enabled, or unset but zsh version is at least 5.0.6.
-# This avoids async prompt issues caused by previous zsh versions:
-# - https://github.com/ohmyzsh/ohmyzsh/issues/12331
-# - https://github.com/ohmyzsh/ohmyzsh/issues/12360
-# TODO(2024-06-12): @mcornella remove workaround when CentOS 7 reaches EOL
-local _style
-if zstyle -t ':omz:alpha:lib:git' async-prompt \
-  || { is-at-least 5.0.6 && zstyle -T ':omz:alpha:lib:git' async-prompt }; then
-  function git_prompt_info() {
-    if [[ -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_info]}" ]]; then
-      echo -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_info]}"
-    fi
-  }
-
-  function git_prompt_status() {
-    if [[ -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_status]}" ]]; then
-      echo -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_status]}"
-    fi
-  }
-
-  # Conditionally register the async handler, only if it's needed in $PROMPT
-  # or any of the other prompt variables
-  function _defer_async_git_register() {
-    # Check if git_prompt_info is used in a prompt variable
-    case "${PS1}:${PS2}:${PS3}:${PS4}:${RPROMPT}:${RPS1}:${RPS2}:${RPS3}:${RPS4}" in
-    *(\$\(git_prompt_info\)|\`git_prompt_info\`)*)
-      _omz_register_handler _omz_git_prompt_info
-      ;;
-    esac
-
-    case "${PS1}:${PS2}:${PS3}:${PS4}:${RPROMPT}:${RPS1}:${RPS2}:${RPS3}:${RPS4}" in
-    *(\$\(git_prompt_status\)|\`git_prompt_status\`)*)
-      _omz_register_handler _omz_git_prompt_status
-      ;;
-    esac
-
-    add-zsh-hook -d precmd _defer_async_git_register
-    unset -f _defer_async_git_register
-  }
-
-  # Register the async handler first. This needs to be done before
-  # the async request prompt is run
-  precmd_functions=(_defer_async_git_register $precmd_functions)
-elif zstyle -s ':omz:alpha:lib:git' async-prompt _style && [[ $_style == "force" ]]; then
+# Enable async prompt by default unless the setting is at false / no
+if zstyle -t ':omz:alpha:lib:git' async-prompt; then
   function git_prompt_info() {
     if [[ -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_info]}" ]]; then
       echo -n "${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_info]}"
