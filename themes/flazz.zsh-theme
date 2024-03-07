@@ -1,4 +1,4 @@
-if [ "$USERNAME" = "root" ]
+if [ "$USER" = "root" ]
 then CARETCOLOR="red"
 else CARETCOLOR="blue"
 fi
