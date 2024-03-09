@@ -83,8 +83,10 @@ function _omz_async_request {
     exec {fd}< <(
       # Tell parent process our PID
       builtin echo ${sysparams[pid]}
+      # Store handler name for callback
+      builtin echo $handler
       # Set exit code for the handler if used
-      () { return $ret }
+      (exit $ret)
       # Run the async function handler
       $handler
     )
