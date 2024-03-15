@@ -27,22 +27,10 @@ dependencies:
     postcopy: |
       set -e
       test -e dependencies/OMZ-README.md && cat dependencies/OMZ-README.md >> README.md
-  plugins/wd:
-    repo: mfaerevaag/wd
+  plugins/gradle:
+    repo: gradle/gradle-completion
     branch: master
-    version: tag:v0.9.3
+    version: ea018400d86610d0f79f84debbb33c2d2ef5dbec
     precopy: |
       set -e
-      rm -r test
-      rm install.sh tty.gif wd.1
-  plugins/z:
-    branch: master
-    repo: agkozak/zsh-z
-    version: dd94ef04acc41748ba171eb219971cb455e0040b
-    precopy: |
-      set -e
-      test -e README.md && mv -f README.md MANUAL.md
-    postcopy: |
-      set -e
-      test -e _zshz && mv -f _zshz _z
-      test -e zsh-z.plugin.zsh && mv -f zsh-z.plugin.zsh z.plugin.zsh
+      find . ! -name _gradle -delete
