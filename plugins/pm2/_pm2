@@ -317,11 +317,9 @@ _pm2_id_names() {
   local -a names=(${(@f)"$(echo $app_list | awk '/^\+---/{sub("+--- ", ""); print}')"})
   local -a ids=(${(@f)"$(echo $app_list | awk '/^pm2 id/{sub("pm2 id :", ""); print}')"})
 
-  if (( ${#ids} > 0 )); then
-    local -a id_names
-    for i in {1..${#ids}}; do
-      id_names+=( "${ids[i]}:${names[i]}" )
-    done
+    local -a names ids
+    names=(`echo $app_list | grep '+---' | awk '{print $2}'`)
+    ids=(`echo $app_list | grep 'pm2 id' | awk '{print $4}'`)
 
     _describe 'id' id_names
   fi
